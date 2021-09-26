@@ -7,7 +7,7 @@
     <tab-control class="tab-control" :titles="['流行', '新款', '精选']"/>
     <goods-list :goods="goods['pop'].list"/>
 
-    <div style="height:1000px"></div>
+    <!-- <div style="height:1000px"></div> -->
   </div>
 </template>
 
@@ -52,8 +52,8 @@
 
       // 2、请求商品数据
       this.getHomeGoods('pop')      
-      this.getHomeGoods('new')      
-      this.getHomeGoods('sell')      
+      // this.getHomeGoods('new')      
+      // this.getHomeGoods('sell')      
     },
     methods: {
       getHomeMultidata() {
@@ -65,6 +65,7 @@
       getHomeGoods(type) {
         const page = this.goods[type].page + 1
         getHomeGoods(type, page).then(res => {
+          console.log(res.data.list);
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1   
         })
@@ -76,7 +77,7 @@
 
 <style>
   #home {
-    padding: 44px 0 100px 0;
+    padding: 44px 0 49px 0;
   }
 
   .home-nav {
