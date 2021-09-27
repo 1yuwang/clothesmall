@@ -3,7 +3,12 @@
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
     
-    <scroll class="scroll" ref="scroll">
+    <scroll class="scroll"
+            ref="scroll" 
+            :probe-type="3" 
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="loadMore">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends" />
       <feature-view/>
@@ -13,7 +18,7 @@
       <goods-list :goods="showGoods"/>   
     </scroll>
 
-    <back-top @click.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -58,7 +63,8 @@ import HomeSwiper from './children/HomeSwiper'
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
         },
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false,
       }
     },
     created() {
@@ -94,6 +100,14 @@ import HomeSwiper from './children/HomeSwiper'
       backClick() {
         this.$refs.scroll.scrollTo(0, 0, 300)
       },
+      contentScroll(position) {
+        this.isShowBackTop = (-position.y) > 1000
+      },
+      loadMore() {
+        this.getHomeGoods(this.currentType)
+        // this.$refs.scroll.scroll.refresh()
+      },
+
 
       /**
        * 网络请求相关方法
@@ -109,6 +123,7 @@ import HomeSwiper from './children/HomeSwiper'
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1   
+          this.$refs.scroll.scroll.finishPullUp()
         })
       }
     }
